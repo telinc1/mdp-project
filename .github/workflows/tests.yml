@@ -1,0 +1,61 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  unit:
+    strategy:
+      matrix:
+        repo: [game, game-discord, game-web, web]
+    name: Unit Tests (${{ matrix.repo }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip3 install -r repos/${{ matrix.repo }}/requirements.txt
+      - name: Run unit tests
+        run: python3 -m unittest repos/${{ matrix.repo }}/src/tests.py
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  snyk:
+    name: Snyk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+      - name: Install Python Dependencies
+        run: python3 -m pip install -r repos/web/requirements.txt
+      - name: Run Snyk
+        run: snyk test --file=repos/web/requirements.txt
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  gitleaks:
+    name: Gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

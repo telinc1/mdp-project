@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wwtbam
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wwtbam-web
+            port:
+              number: 8080
+      - path: /game
+        pathType: Prefix
+        backend:
+          service:
+            name: wwtbam-game-web
+            port:
+              number: 8080

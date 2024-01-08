@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wwtbam-game
+spec:
+  selector:
+    matchLabels:
+      name: wwtbam-game
+  template:
+    metadata:
+      labels:
+        name: wwtbam-game
+    spec:
+      containers:
+        - name: app
+          image: 533267107983.dkr.ecr.eu-central-1.amazonaws.com/wwtbam-ecr:game-5acc8b701b388614c9e621db455b29da023e6c21
+      imagePullSecrets:
+        - name: regcred

@@ -1,0 +1,45 @@
+name: Code Style
+
+on: [push, pull_request]
+
+jobs:
+  flake8:
+    strategy:
+      matrix:
+        repo: [game, game-discord, game-web, web]
+    name: Lint Python (${{ matrix.repo }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Lint
+        uses: py-actions/flake8@v2
+        with:
+          path: "repos/${{ matrix.repo }}/src"
+          max-line-length: "100"
+  editorconfig:
+    name: Check .editorconfig
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install editorconfig-checker
+        uses: editorconfig-checker/action-editorconfig-checker@main
+      - name: Run editorconfig-checker
+        run: editorconfig-checker
+  markdownlint:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+      - name: Install MarkdownLint
+        run: npm install -g markdownlint-cli
+      - name: Run MarkdownLint
+        run: markdownlint --ignore LICENSE.md .

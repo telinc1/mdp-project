@@ -1,0 +1,5 @@
+flyway/config
+kubeconfig*
+terraform.tfstate*
+.terraform*
+__pycache__

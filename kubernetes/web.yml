@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wwtbam-web
+spec:
+  selector:
+    matchLabels:
+      name: wwtbam-web
+  template:
+    metadata:
+      labels:
+        name: wwtbam-web
+    spec:
+      containers:
+        - name: web
+          image: 533267107983.dkr.ecr.eu-central-1.amazonaws.com/wwtbam-ecr:web-5acc8b701b388614c9e621db455b29da023e6c21
+          ports:
+            - containerPort: 8080
+          env:
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: redis
+                key: host
+          - name: MYSQL_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mysql
+                key: host
+          - name: MYSQL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysql
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql
+                key: password
+      imagePullSecrets:
+        - name: regcred
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: wwtbam-web
+spec:
+  selector:
+    name: wwtbam-web
+  ports:
+    - port: 8080
+  type: NodePort
