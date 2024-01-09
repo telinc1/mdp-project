@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: 533267107983.dkr.ecr.eu-central-1.amazonaws.com/wwtbam-ecr:web-5acc8b701b388614c9e621db455b29da023e6c21
+          image: 533267107983.dkr.ecr.eu-central-1.amazonaws.com/wwtbam-ecr:web-24a4f64567705f4814747b352cd356437a332162
           ports:
             - containerPort: 8080
           env:

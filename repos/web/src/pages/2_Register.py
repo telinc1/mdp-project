@@ -16,7 +16,7 @@ try:
     ) as connection:
         with st.form("register_form"):
             username = st.text_input("Username")
-            password = st.text_input("Password")
+            password = st.text_input("Password", type="password")
 
             register = st.form_submit_button('Register')
 
